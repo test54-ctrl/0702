@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 반 신나는 활동 보관함</title>
+    <style>
+        :root {
+            --bg-color: #fefcf0;
+            --main-yellow: #fdd835;
+            --light-yellow: #fff9c4;
+            --dark-yellow: #fbc02d;
+            --text-color: #424242;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 웰컴 배너 스타일 */
+        .welcome-container {
+            text-align: center;
+            background-color: white;
+            padding: 35px 50px;
+            border-radius: 25px;
+            box-shadow: 0 8px 24px rgba(253, 216, 53, 0.2);
+            border: 5px solid var(--main-yellow);
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 40px;
+            box-sizing: border-box;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        .class-title {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            color: #f57f17;
+        }
+
+        .welcome-msg {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #616161;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* 아카이브 리스트 섹션 */
+        .archive-section {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 각 카드 스타일 */
+        .activity-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-left: 8px solid var(--main-yellow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(253, 216, 53, 0.3);
+            background-color: #fffde7;
+        }
+
+        .activity-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .activity-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            color: #212121;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activity-desc {
+            font-size: 0.95rem;
+            color: #757575;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* 이동하기 버튼 */
+        .link-btn {
+            background-color: var(--main-yellow);
+            color: #5d4037;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: background 0.2s, transform 0.1s;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .link-btn:hover {
+            background-color: var(--dark-yellow);
+            transform: scale(1.03);
+        }
+
+        /* 귀여운 푸터 */
+        footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: #b0bec5;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            60% { transform: scale(1.02); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-container">
+        <h1 class="class-title">☀️ 1학년 6반 환영합니다! ☀️</h1>
+        <p class="welcome-msg">
+            오늘도 친구들과 함께 신나는 하루를 보내봅시다~🎈<br>
+            우리 반만의 소중한 추억과 의견을 아래 링크에서 나누어 보아요!
+        </p>
+    </div>
+
+    <div class="archive-section">
+
+        <div class="activity-card">
+            <div class="activity-info">
+                <h2 class="activity-title">🌸 우리 반 칭찬 꽃밭</h2>
+                <p class="activity-desc">한 달에 한 번, 고마운 친구를 칭찬하는 예쁜 마음을 심어보세요. 따뜻한 말을 입력할 때마다 잔디밭에 예쁜 꽃들이 무작위로 피어나고, 마우스를 올리면 칭찬 이유를 볼 수 있어요!</p>
+            </div>
+            <a href="a.html" class="link-btn">선택하기 👉</a>
+        </div>
+
+        <div class="activity-card">
+            <div class="activity-info">
+                <h2 class="activity-title">📚 우리 반 독서록 책장</h2>
+                <p class="activity-desc">내가 읽은 책의 제목, 저자, 출판사와 함께 나만의 별점을 남겨봐요. 친구들이 독서록을 작성할 때마다 비밀 책장에 다양한 색깔의 책들이 차곡차곡 쌓이고, 클릭하면 상세한 추천 이유를 공유할 수 있습니다.</p>
+            </div>
+            <a href="b.html" class="link-btn">선택하기 👉</a>
+        </div>
+
+        <div class="activity-card">
+            <div class="activity-info">
+                <h2 class="activity-title">🗣️ 우리 반 자유 토론방</h2>
+                <p class="activity-desc">이번 달의 뜨거운 주제: "인공지능 로봇 세금을 내야 할까?" 나의 찬성/반대 입장과 논리적인 이유를 적어보세요. 초록색 대자보 칠판 위에 알록달록한 찬반 포스트잇이 착착 붙어 의견을 한눈에 모아볼 수 있습니다.</p>
+            </div>
+            <a href="c.html" class="link-btn">선택하기 👉</a>
+        </div>
+
+    </div>
+
+    <footer>💛 1-6 즐거운 학교생활 저장소 💛</footer>
+
+</body>
+</html>

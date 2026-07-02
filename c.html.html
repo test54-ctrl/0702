@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 반 자유 토론방</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --bg-color: #f1f2f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        .container {
+            display: flex;
+            gap: 25px;
+            max-width: 1300px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* 왼쪽: 입력 폼 섹션 */
+        .form-section {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .topic-box {
+            background-color: #ebf3ff;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .topic-box h3 {
+            margin: 0 0 5px 0;
+            color: #2980b9;
+            font-size: 0.95rem;
+        }
+
+        .topic-box p {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 110px;
+        }
+
+        /* 찬반 선택 라디오 버튼 스타일 */
+        .vote-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .vote-btn {
+            flex: 1;
+            position: relative;
+        }
+
+        .vote-btn input[type="radio"] {
+            display: none;
+        }
+
+        .vote-btn label {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.05rem;
+            border: 2px solid #cbd5e1;
+            transition: all 0.2s;
+            margin: 0;
+        }
+
+        /* 찬성 선택 시 */
+        #agree + label {
+            color: #2980b9;
+            background: #f0f7fc;
+        }
+        #agree:checked + label {
+            background: #2980b9;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        /* 반대 선택 시 */
+        #disagree + label {
+            color: #c0392b;
+            background: #fdf2f2;
+        }
+        #disagree:checked + label {
+            background: #c0392b;
+            color: white;
+            border-color: #c0392b;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        button.submit-btn:hover {
+            background-color: #1a252f;
+        }
+
+        /* 오른쪽: 토론 대자보(칠판) 섹션 */
+        .board-section {
+            flex: 2;
+            min-width: 500px;
+            background-color: #2d5a27; /* 칠판 초록색 */
+            border: 12px solid #5c4033; /* 나무 테두리 */
+            border-radius: 10px;
+            min-height: 580px;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .board-header {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 2px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* 포스트잇 스타일 */
+        .postit {
+            position: absolute;
+            width: 160px;
+            min-height: 160px;
+            padding: 15px;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #2c3e50;
+            overflow: hidden;
+            word-break: break-all;
+            cursor: move; /* 움직일 수 있는 느낌 주기 */
+            animation: pinPostit 0.3s ease-out forwards;
+            box-sizing: border-box;
+        }
+
+        /* 찬성 포스트잇 (하늘색/민트 계열) */
+        .postit.agree-card {
+            background: #fffa90; /* 기본 포스트잇 노란색 바탕에 상단 띠로 구분하거나 전체 색상 차별화 */
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-left: 5px solid #0284c7;
+        }
+
+        /* 반대 포스트잇 (분홍색/오렌지 계열) */
+        .postit.disagree-card {
+            background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
+            border-left: 5px solid #e11d48;
+        }
+
+        /* 포스트잇 내부 요소 */
+        .postit-tag {
+            font-weight: bold;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+            color: white;
+        }
+        .agree-card .postit-tag { background-color: #0284c7; }
+        .disagree-card .postit-tag { background-color: #e11d48; }
+
+        .postit-user {
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            text-align: right;
+            color: #555;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+            padding-top: 5px;
+        }
+
+        @keyframes pinPostit {
+            0% { transform: scale(1.5) rotate(15deg); opacity: 0; }
+            100% { transform: scale(1) rotate(var(--rotation)); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🗣️ 우리 반 자유 토론방 🤖</h1>
+    <p class="subtitle">친구들의 생각을 존중하며 자유롭게 의견을 나누어 보아요.</p>
+
+    <div class="container">
+        <div class="form-section">
+            <div class="topic-box">
+                <h3>📌 이번 달의 토론 주제</h3>
+                <p>인공지능(AI) 로봇에게도 세금을 내게 해야 할까?</p>
+            </div>
+
+            <form id="debateForm">
+                <div class="form-group">
+                    <label for="studentName">작성자 이름</label>
+                    <input type="text" id="studentName" placeholder="이름을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label>나의 입장 선택</label>
+                    <div class="vote-group">
+                        <div class="vote-btn">
+                            <input type="radio" id="agree" name="stance" value="찬성" required>
+                            <label for="agree">👍 찬성</label>
+                        </div>
+                        <div class="vote-btn">
+                            <input type="radio" id="disagree" name="stance" value="반대">
+                            <label for="disagree">👎 반대</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="opinionText">나의 의견 (이유)</label>
+                    <textarea id="opinionText" placeholder="그렇게 생각하는 이유를 논리적이고 자유롭게 적어주세요!" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">📌 칠판에 의견 붙이기</button>
+            </form>
+        </div>
+
+        <div class="board-section" id="debateBoard">
+            <div class="board-header">✏️ 우리 반 한마디 칠판 (포스트잇을 확인해 보세요!)</div>
+            </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('debateForm');
+        const board = document.getElementById('debateBoard');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 값 가져오기
+            const name = document.getElementById('studentName').value;
+            const stance = document.querySelector('input[name="stance"]:checked').value;
+            const opinion = document.getElementById('opinionText').value;
+
+            // 포스트잇 생성
+            const postit = document.createElement('div');
+            
+            // 찬반에 따른 클래스 부여
+            if (stance === '찬성') {
+                postit.className = 'postit agree-card';
+            } else {
+                postit.className = 'postit disagree-card';
+            }
+
+            // 칠판 내부 무작위 위치 계산 (테두리 밖으로 안 벗어나게 가로 5%~75%, 세로 15%~65%)
+            const randomX = Math.random() * 70 + 5;
+            const randomY = Math.random() * 50 + 15;
+            // 살짝 삐딱하게 붙는 효과를 위한 무작위 회전 각도 (-10도 ~ 10도)
+            const randomRotate = (Math.random() * 20) - 10;
+
+            postit.style.left = `${randomX}%`;
+            postit.style.top = `${randomY}%`;
+            postit.style.setProperty('--rotation', `${randomRotate}deg`);
+
+            // 포스트잇 내부 내용 채우기
+            postit.innerHTML = `
+                <span class="postit-tag">${stance}</span>
+                <div style="font-weight: 500; min-height: 75px;">${opinion.replace(/\n/g, '<br>')}</div>
+                <div class="postit-user">👤 ${name}</div>
+            `;
+
+            // 칠판에 붙이기
+            board.appendChild(postit);
+
+            // 입력창 초기화 (이름은 다음 입력을 위해 남겨두고 내용과 찬반만 리셋할 수도 있지만 전체 리셋 처리)
+            form.reset();
+        });
+    </script>
+</body>
+</html>

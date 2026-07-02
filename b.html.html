@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 반 독서록 책장</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --bg-color: #f4f6f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* 입력 폼 섹션 */
+        .form-section {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 90px;
+        }
+
+        /* 별점 라디오 버튼 스타일 */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 1.8rem;
+            color: #ccc;
+            cursor: pointer;
+            margin: 0;
+            transition: color 0.1s;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #f1c40f;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #365682;
+        }
+
+        /* 책장 섹션 */
+        .bookshelf-section {
+            flex: 1.5;
+            min-width: 450px;
+            background-color: #faf4eb;
+            background-image: radial-gradient(#e1d7c6 1px, transparent 0);
+            background-size: 24px 24px;
+            border-radius: 15px;
+            min-height: 550px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05);
+            border: 8px solid #8e7355; /* 나무 책장 느낌 프레임 */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column-reverse; /* 아래서부터 책이 쌓이도록 설정 */
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+
+        /* 책 스타일 */
+        .book {
+            width: 85%;
+            margin: 2px 0;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 2px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            animation: stackBook 0.4s ease-out forwards;
+            box-sizing: border-box;
+            border-left: 5px solid rgba(0,0,0,0.15);
+        }
+
+        .book:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+            z-index: 5;
+        }
+
+        .book-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+
+        .book-stars {
+            color: #f1c40f;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            font-size: 0.9rem;
+        }
+
+        @keyframes stackBook {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 독서록 상세 팝업 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body p {
+            margin: 10px 0;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #2d3748;
+            display: inline-block;
+            width: 90px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📚 우리 반 독서록 책장 📖</h1>
+    <p class="subtitle">읽은 책을 등록하고 우리 반 비밀 책장을 채워보세요!</p>
+
+    <div class="container">
+        <div class="form-section">
+            <form id="bookForm">
+                <div class="form-group">
+                    <label for="bookTitle">1. 책 제목</label>
+                    <input type="text" id="bookTitle" placeholder="예: 어린 왕자" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookPublisher">2. 출판사</label>
+                    <input type="text" id="bookPublisher" placeholder="예: 열린책들" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookAuthor">3. 저자 (지은이)</label>
+                    <input type="text" id="bookAuthor" placeholder="예: 앙투안 드 생텍쥐페리" required>
+                </div>
+
+                <div class="form-group">
+                    <label>4. 별점 (5점 만점)</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ratingReason">5. 별점 준 이유</label>
+                    <textarea id="ratingReason" placeholder="이 책을 추천하는 이유나 가장 인상 깊었던 점을 적어주세요!" required></textarea>
+                </div>
+
+                <button type="submit">📘 책장에 책 쌓기</button>
+            </form>
+        </div>
+
+        <div class="bookshelf-section" id="bookshelf">
+            </div>
+    </div>
+
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle" style="margin:0; color:#2b6cb0;">책 제목</h2>
+            </div>
+            <div class="modal-body">
+                <p><span class="info-label">✍️ 저자:</span> <span id="modalAuthor"></span></p>
+                <p><span class="info-label">🏢 출판사:</span> <span id="modalPublisher"></span></p>
+                <p><span class="info-label">⭐ 별점:</span> <span id="modalStars" style="color:#f6ad55;"></span></p>
+                <hr style="border:0; border-top:1px solid #edf2f7; margin:15px 0;">
+                <p><strong>💬 별점 준 이유:</strong></p>
+                <p id="modalReason" style="background:#f7fafc; padding:12px; border-radius:8px; font-style:italic;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 책 두께(높이)와 배경 패딩 세팅용 랜덤 컬러 풀
+        const bookColors = [
+            '#e74c3c', '#e67e22', '#2ecc71', '#3498db', '#9b59b6', 
+            '#1abc9c', '#27ae60', '#2980b9', '#8e44ad', '#d35400'
+        ];
+
+        const form = document.getElementById('bookForm');
+        const bookshelf = document.getElementById('bookshelf');
+        
+        // 모달 관련 요소
+        const modal = document.getElementById('bookModal');
+        const closeModal = document.getElementById('closeModal');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 입력값 변수 저장
+            const title = document.getElementById('bookTitle').value;
+            const publisher = document.getElementById('bookPublisher').value;
+            const author = document.getElementById('bookAuthor').value;
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            const reason = document.getElementById('ratingReason').value;
+
+            // 별 문자열 변환
+            const starString = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+
+            // 책 오브젝트 생성 (데이터 보관용)
+            const bookData = { title, publisher, author, starString, reason };
+
+            // 책 컴포넌트(DOM) 생성
+            const bookDiv = document.createElement('div');
+            bookDiv.className = 'book';
+            
+            // 시각적 다양성을 위한 디자인 요소 랜덤 부여
+            const randomColor = bookColors[Math.floor(Math.random() * bookColors.length)];
+            const randomHeight = Math.floor(Math.random() * 15) + 35; // 35px ~ 50px 사이 두께
+            
+            bookDiv.style.backgroundColor = randomColor;
+            bookDiv.style.height = `${randomHeight}px`;
+
+            bookDiv.innerHTML = `
+                <span class="book-title">📘 ${title}</span>
+                <span class="book-stars">${starString}</span>
+            `;
+
+            // 클릭 시 독서록 세부 정보 모달 팝업 바인딩
+            bookDiv.addEventListener('click', function() {
+                document.getElementById('modalTitle').innerText = bookData.title;
+                document.getElementById('modalAuthor').innerText = bookData.author;
+                document.getElementById('modalPublisher').innerText = bookData.publisher;
+                document.getElementById('modalStars').innerText = bookData.starString;
+                document.getElementById('modalReason').innerHTML = bookData.reason.replace(/\n/g, '<br>');
+                modal.style.display = 'flex';
+            });
+
+            // 책장에 추가 (flex-direction: column-reverse 라서 가장 최근 책이 아래쪽 쌓임 구조 위로 올라감)
+            bookshelf.appendChild(bookDiv);
+
+            // 폼 리셋 및 알림
+            form.reset();
+            alert(`'${title}' 독서록이 책장에 꽂혔습니다! 🚀`);
+        });
+
+        // 모달 닫기 이벤트
+        closeModal.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
+    </script>
+</body>
+</html>
